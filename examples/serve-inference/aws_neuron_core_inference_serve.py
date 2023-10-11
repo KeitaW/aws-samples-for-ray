@@ -1,15 +1,13 @@
-from fastapi import FastAPI  # noqa
-from ray import serve  # noqa
-
-import torch # noqa
+from fastapi import FastAPI
+from ray import serve
+import torch
+from transformers import AutoTokenizer
 import os
-from transformers import AutoTokenizer # noqa
 
 app = FastAPI()
 
-hf_model = "openlm-research/open_llama_3b"
-local_model_path = "open_llama_3b_split"
-
+hf_model = "NousResearch/Llama-2-7b-chat-hf"
+local_model_path = f"{hf_model.replace('/','_')}-split"
 
 @serve.deployment(num_replicas=1)
 @serve.ingress(app)
@@ -23,19 +21,19 @@ class APIIngress:
         result = await ref
         return result
 
-
 @serve.deployment(
-    ray_actor_options={"resources": {"neuron_cores": 32},
-                       "runtime_env": {"env_vars": {"NEURON_CC_FLAGS": "--model-type=transformer-inference"}}},
+    ray_actor_options={"resources": {"neuron_cores": 12},
+                       "runtime_env": {"env_vars": {"NEURON_CC_FLAGS": "-O1"}}},
     autoscaling_config={"min_replicas": 1, "max_replicas": 1},
 )
+
 class LlamaModel:
     def __init__(self):
-        import torch # noqa
-        from transformers import AutoTokenizer # noqa
-        from transformers_neuronx.llama.model import LlamaForSampling # noqa
-        from transformers import LlamaForCausalLM # noqa
-        from transformers_neuronx.module import save_pretrained_split # noqa
+        import torch
+        from transformers import AutoTokenizer
+        from transformers_neuronx.llama.model import LlamaForSampling
+        from transformers import LlamaForCausalLM
+        from transformers_neuronx.module import save_pretrained_split
 
         if not os.path.exists(local_model_path):
             print(f"Saving model split for {hf_model} to local path {local_model_path}")
@@ -45,15 +43,14 @@ class LlamaModel:
             print(f"Using existing model split {local_model_path}")
 
         print(f"Loading and compiling model {local_model_path} for Neuron")
-        self.neuron_model = LlamaForSampling.from_pretrained(local_model_path, batch_size=1, tp_degree=32, amp='f16')
+        self.neuron_model = LlamaForSampling.from_pretrained(local_model_path, batch_size=1, tp_degree=12, amp='f16')
         self.neuron_model.to_neuron()
         self.tokenizer = AutoTokenizer.from_pretrained(hf_model)
 
     def infer(self, sentence: str):
         input_ids = self.tokenizer.encode(sentence, return_tensors="pt")
         with torch.inference_mode():
-            generated_sequences = self.neuron_model.sample(input_ids, sequence_length=2048, top_k=50)
+            generated_sequences = self.neuron_model.sample(input_ids, sequence_length=1024, top_k=50)
         return [self.tokenizer.decode(seq) for seq in generated_sequences]
-
 
 entrypoint = APIIngress.bind(LlamaModel.bind())
