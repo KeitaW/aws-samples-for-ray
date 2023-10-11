@@ -30,7 +30,7 @@ auth:
 available_node_types:
   ray.head.default:
     node_config:
-      InstanceType: trn1.32xlarge
+      InstanceType: inf2.24xlarge
       ImageId: ami-03f65b8614a860c29
       EbsOptimized: True
       BlockDeviceMappings:
