@@ -1,5 +1,4 @@
 cluster_name: inference-serve
-
 max_workers: 2
 
 # If a node is idle for this many minutes, it will be removed.
@@ -13,7 +12,7 @@ provider:
   # Nodes will be launched in the first listed availability zone and will
   # be tried in the subsequent availability zones if launching fails.
   availability_zone: us-west-2d
-  #use_internal_ips: True
+  use_internal_ips: False
   cache_stopped_nodes: False
 
 # How Ray will authenticate with newly launched nodes.
@@ -31,18 +30,19 @@ available_node_types:
   ray.head.default:
     node_config:
       InstanceType: inf2.48xlarge
-      ImageId: ami-03f65b8614a860c29
+      ImageId: ami-08e0e50fdfb9441dc  # for us-east-2 use ami-08e0e50fdfb9441dc
       EbsOptimized: True
       BlockDeviceMappings:
         - DeviceName: /dev/sda1
           Ebs:
-            VolumeSize: 512
+            VolumeSize: 250
       NetworkInterfaces:
         - DeviceIndex: 0
           NetworkCardIndex: 0
-          SubnetId: subnet-0a910e572266c13bd
+          SubnetId: subnet-00000000000000000  # update with your subnet id
           Groups:
-            - sg-0294e801896f7b828
+            - sg-00000000000000000  # update with your security group id
+          AssociatePublicIpAddress: True
 
 # List of shell commands to run to set up nodes.
 setup_commands:
@@ -50,38 +50,12 @@ setup_commands:
   - sudo pkill -9 dpkg || true
   - sudo dpkg --configure -a
   - |
-    . /etc/os-release
-    sudo tee /etc/apt/sources.list.d/neuron.list > /dev/null <<EOF
-    deb https://apt.repos.neuron.amazonaws.com ${VERSION_CODENAME} main
-    EOF
-  - wget -qO - https://apt.repos.neuron.amazonaws.com/GPG-PUB-KEY-AMAZON-AWS-NEURON.PUB | sudo apt-key add -
-  - sudo apt-get update -y
-  - sudo apt-get install git -y
-  - sudo apt-get install linux-headers-$(uname -r) -y
-  - sudo apt-get install aws-neuronx-dkms -y
-  - sudo apt-get install aws-neuronx-collectives=2.* -y
-  - sudo apt-get install aws-neuronx-runtime-lib=2.* -y
-  - sudo apt-get install aws-neuronx-tools=2.* -y
-  - export PATH=/opt/aws/neuron/bin:$PATH
-  - sudo sed -i 'H;1h;$!d;x;/hard  *nofile/!s/$/\n* hard nofile 1000000/' /etc/security/limits.conf
-  - sudo sed -i 'H;1h;$!d;x;/soft  *nofile/!s/$/\n* soft nofile 1000000/' /etc/security/limits.conf
-  - sudo sed -i 's/^#*\(\*\|\s*\*\)\s*soft\s*nofile\s*[0-9]\+$/\1 soft nofile 1000000/' /etc/security/limits.conf
-  - sudo sed -i 's/^#*\(\*\|\s*\*\)\s*hard\s*nofile\s*[0-9]\+$/\1 hard nofile 1000000/' /etc/security/limits.conf
-  - sudo sed -i 's/^#*\(\*\|\s*\*\)\s*soft\s*nofile\s*[0-9]\+$/\1 soft nofile 1000000/' /etc/security/limits.d/01_efa.conf || true
-  - sudo sed -i 's/^#*\(\*\|\s*\*\)\s*hard\s*nofile\s*[0-9]\+$/\1 hard nofile 1000000/' /etc/security/limits.d/01_efa.conf || true
-  - sudo apt-get install -y python3.10-venv g++
-  - python3.10 -m venv /home/ubuntu/aws_neuron_venv_pytorch
-  - |
-    source /home/ubuntu/aws_neuron_venv_pytorch/bin/activate
-    python -m pip install -U pip
-    pip install ipykernel
+    source /opt/aws_neuron_venv_pytorch/bin/activate
+    pip3 install -U pip
+    pip3 install ipykernel
     python3.8 -m ipykernel install --user --name aws_neuron_venv_pytorch --display-name "Python (torch-neuronx)"
-    pip install jupyter notebook
-    pip install environment_kernels
-    python -m pip config set global.extra-index-url https://pip.repos.neuron.amazonaws.com
-    python -m pip install wget awscli regex
-    pip install -U neuronx-cc==2.* torch-neuronx torchvision "ray[serve]==2.7.0rc0" transformers-neuronx sentencepiece
-    deactivate
+    pip3 install jupyter notebook environment_kernels gradio
+    pip3 install "ray[air]==2.7.0rc0" transformers-neuronx sentencepiece
 
 # Custom commands that will be run on the head node after common setup.
 head_setup_commands: []
