@@ -30,7 +30,7 @@ auth:
 available_node_types:
   ray.head.default:
     node_config:
-      InstanceType: trn1.32xlarge
+      InstanceType: inf2.48xlarge
       ImageId: ami-03f65b8614a860c29
       EbsOptimized: True
       BlockDeviceMappings:
@@ -40,9 +40,9 @@ available_node_types:
       NetworkInterfaces:
         - DeviceIndex: 0
           NetworkCardIndex: 0
-          SubnetId: subnet-replace-me
+          SubnetId: subnet-0a910e572266c13bd
           Groups:
-            - sg-replace-me
+            - sg-0294e801896f7b828
 
 # List of shell commands to run to set up nodes.
 setup_commands:
