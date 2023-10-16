@@ -80,7 +80,7 @@ setup_commands:
     pip install environment_kernels
     python -m pip config set global.extra-index-url https://pip.repos.neuron.amazonaws.com
     python -m pip install wget awscli regex
-    pip install -U neuronx-cc==2.* torch-neuronx torchvision "ray[serve]==2.7.0rc0" transformers-neuronx sentencepiece
+    pip install -U neuronx-cc==2.* torch-neuronx torchvision "ray[serve]==2.7.1" transformers-neuronx sentencepiece
     deactivate
 
 # Custom commands that will be run on the head node after common setup.
