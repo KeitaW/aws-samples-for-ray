@@ -30,14 +30,14 @@ auth:
 available_node_types:
   ray.head.default:
     node_config:
-      InstanceType: c5.4xlarge
+      InstanceType: inf2.24xlarge
       ImageId: ami-08e0e50fdfb9441dc
       EbsOptimized: True
       BlockDeviceMappings:
         - DeviceName: /dev/sda1
           Ebs:
             VolumeSize: 512
-    resources: { "CPU": 0 } # Avoid scheduling ray processes on the head node.
+    # resources: { "CPU": 0 } # Avoid scheduling ray processes on the head node.
   ray.worker.default:
     min_workers: 1
     max_workers: 4
@@ -64,7 +64,13 @@ setup_commands:
     pip install -U neuronx-cc==2.* torch-neuronx torchvision "ray[serve]==2.7.1" transformers-neuronx sentencepiece
 
 # Custom commands that will be run on the head node after common setup.
-head_setup_commands: []
+head_setup_commands:
+  - |
+    curl -OL https://go.dev/dl/go1.21.3.linux-amd64.tar.gz
+    sudo tar -C /usr/local -xvf go1.21.3.linux-amd64.tar.gz
+    echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.bashrc
+    /usr/local/go/bin/go install github.com/rakyll/hey@latest
+    echo "export PATH=$PATH:/home/ubuntu/go/bin" >> ~/.bashrc
 
 # Custom commands that will be run on the worker node after common setup.
 worker_setup_commands: []

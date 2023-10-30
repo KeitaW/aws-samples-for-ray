@@ -1,7 +1,7 @@
 from fastapi import FastAPI
+from starlette.requests import Request
 from ray import serve
 import torch
-from transformers import AutoTokenizer
 import os
 
 app = FastAPI()
@@ -9,7 +9,7 @@ app = FastAPI()
 hf_model = "NousResearch/Llama-2-7b-chat-hf"
 local_model_path = f"{hf_model.replace('/','_')}-split"
 
-@serve.deployment(num_replicas=1)
+@serve.deployment(num_replicas=2)
 @serve.ingress(app)
 class APIIngress:
     def __init__(self, llama_model_handle) -> None:
@@ -23,10 +23,13 @@ class APIIngress:
 
 @serve.deployment(
     ray_actor_options={"resources": {"neuron_cores": 12},
-                       "runtime_env": {"env_vars": {"NEURON_CC_FLAGS": "-O1"}}},
-    autoscaling_config={"min_replicas": 1, "max_replicas": 1},
+                       "runtime_env": {"env_vars": {"NEURON_CC_FLAGS": "-O1", "NEURON_COMPILE_CACHE_URL": "/home/ubuntu/neuron_demo/neuron-compile-cache"}}},
+    autoscaling_config={
+        "min_replicas": 1, "max_replicas": 4, 
+        "target_num_ongoing_requests_per_replica": 1,
+        "health_check_timeout_s": 600,
+    },
 )
-
 class LlamaModel:
     def __init__(self):
         import torch
@@ -53,4 +56,4 @@ class LlamaModel:
             generated_sequences = self.neuron_model.sample(input_ids, sequence_length=1024, top_k=50)
         return [self.tokenizer.decode(seq) for seq in generated_sequences]
 
-entrypoint = APIIngress.bind(LlamaModel.bind())
+app = APIIngress.bind(LlamaModel.bind())
