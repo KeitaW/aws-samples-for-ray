@@ -95,16 +95,19 @@ On headnode
 source /opt/aws_neuron_venv_pytorch/bin/activate && serve run neuron_demo/config.yaml
 
 dashboard tunneling
+
+
+## TMP
+
+### How to run serve
+
 ```bash
 # ray get-head-ip cluster-inference-serve.yaml 
-2023-10-23 08:44:53,648 VINFO utils.py:149 -- Creating AWS resource `ec2` in `us-west-2`
-2023-10-23 08:44
-44.234.25.201
+# 
 serve build aws_neuron_core_inference_serve:app -o config.yaml
 ray up cluster-inference-serve.yaml
 source /opt/aws_neuron_venv_pytorch/bin/activate
 serve run config.yaml
-TODO: kill 107525
 curl http://127.0.0.1:8000/infer?sentence=AWS 
 hey -z 10m -t 0 http://127.0.0.1:8000/infer?sentence=AWS
 hey -c 1 -q 0.1 -n 3 http://127.0.0.1:8000/infer?sentence=AWS
