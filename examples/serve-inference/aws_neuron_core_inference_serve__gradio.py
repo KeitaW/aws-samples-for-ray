@@ -1,25 +1,14 @@
 import os
 import torch
 from ray import serve
-from starlette.requests import Request
 from transformers import AutoTokenizer, LlamaForCausalLM
 from transformers_neuronx.llama.model import LlamaForSampling
 from transformers_neuronx.module import save_pretrained_split
+from ray.serve.gradio_integrations import GradioIngress
+import gradio as gr
 
 hf_model = "NousResearch/Llama-2-7b-chat-hf"
 local_model_path = f"{hf_model.replace('/','_')}-split"
-
-
-@serve.deployment(num_replicas=1)
-class APIIngress:
-    def __init__(self, llama_model_handle) -> None:
-        self.handle = llama_model_handle
-
-    async def __call__(self, req: Request):
-        sentence = req.query_params.get("sentence")
-        ref = await self.handle.infer.remote(sentence)
-        result = await ref
-        return result
 
 
 @serve.deployment(
@@ -32,12 +21,7 @@ class APIIngress:
             }
         },
     },
-    autoscaling_config={
-        "min_replicas": 1,
-        "max_replicas": 4,
-        "target_num_ongoing_requests_per_replica": 1,
-        "health_check_timeout_s": 600,
-    },
+    num_replicas=1,
 )
 class LlamaModel:
     def __init__(self):
@@ -61,7 +45,34 @@ class LlamaModel:
             generated_sequences = self.neuron_model.sample(
                 input_ids, sequence_length=512, top_k=20
             )
-        return [self.tokenizer.decode(seq) for seq in generated_sequences]
+        return "\n".join([self.tokenizer.decode(seq) for seq in generated_sequences])
 
 
-app = APIIngress.bind(LlamaModel.bind())
+@serve.deployment
+class MyGradioServer(GradioIngress):
+    def __init__(self, downstream_handle):
+        self.downstream = downstream_handle.options(use_new_handle_api=True)
+
+        with gr.Blocks() as demo:
+            gr.Markdown("## Simple LLM Chatbot")
+            gr.Markdown("Enter a prompt for Llama2")
+            with gr.Row():
+                inp = gr.Textbox(label="Input prompt:")
+            with gr.Row():
+                btn = gr.Button("Generate")
+            with gr.Row():
+                out = gr.Textbox(label="Llama2 output:", lines=30)
+            btn.click(
+                fn=self.do_update,
+                inputs=inp,
+                outputs=out,
+            )
+
+        super().__init__(lambda: demo)
+
+    async def do_update(self, txt):
+        return await self.downstream.infer.remote(txt)
+
+
+llamamodel = LlamaModel.bind()
+app = MyGradioServer.bind(llamamodel)
