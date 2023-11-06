@@ -1,0 +1,71 @@
+cluster_name: PLACEHOLDER
+
+max_workers: 4
+
+# If a node is idle for this many minutes, it will be removed.
+idle_timeout_minutes: 60
+
+# Cloud-provider specific configuration.
+provider:
+  type: aws
+  region: PLACEHOLDER
+  # Availability zone(s), comma-separated, that nodes may be launched in.
+  # Nodes will be launched in the first listed availability zone and will
+  # be tried in the subsequent availability zones if launching fails.
+  availability_zone: PLACEHOLDER
+  #use_internal_ips: True
+  cache_stopped_nodes: False
+
+# How Ray will authenticate with newly launched nodes.
+auth:
+  ssh_user: ubuntu
+# By default Ray creates a new private keypair, but you can also use your own.
+# If you do so, make sure to also set "KeyName" in the head and worker node
+# configurations below.
+#    ssh_private_key: /path/to/your/key.pem
+
+# Tell the autoscaler the allowed node types and the resources they provide.
+# The key is the name of the node type, which is just for debugging purposes.
+# The node config specifies the launch config and physical instance type.
+available_node_types:
+  ray.head.default:
+    node_config:
+      InstanceType: c5.xlarge
+  ray.worker.default:
+    min_workers: 1
+    max_workers: 4
+    node_config:
+      InstanceType: c5.xlarge
+
+# List of shell commands to run to set up nodes.
+setup_commands:
+  - |
+    source /opt/aws_neuron_venv_pytorch/bin/activate
+    python -m pip install wget awscli regex
+    pip install -U torchvision transformers sentencepiece
+
+# Custom commands that will be run on the head node after common setup.
+head_setup_commands:
+  - |
+    PASS
+
+# Custom commands that will be run on the worker node after common setup.
+worker_setup_commands: []
+
+# Command to start ray on the head node. You don't need to change this.
+head_start_ray_commands:
+  - |
+    ray stop
+    ray start --head --port=6379 --object-manager-port=8076 --autoscaling-config=~/ray_bootstrap_config.yaml
+    deactivate
+
+# Command to start ray on worker nodes. You don't need to change this.
+worker_start_ray_commands:
+  - |
+    ray stop
+    ray start --address=$RAY_HEAD_IP:6379 --object-manager-port=8076
+    deactivate
+
+head_node_type: ray.head.default
+file_mounts:
+  "~/neuron_demo/": "./"

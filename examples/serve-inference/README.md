@@ -111,4 +111,5 @@ serve run config.yaml
 curl http://127.0.0.1:8000/infer?sentence=AWS 
 hey -z 10m -t 0 http://127.0.0.1:8000/infer?sentence=AWS
 hey -c 1 -q 0.1 -n 3 http://127.0.0.1:8000/infer?sentence=AWS
+hey -c 100 -q 1 -n 100 http://127.0.0.1:8000/infer?sentence=AWS
 ```
