@@ -31,7 +31,7 @@ available_node_types:
   ray.head.default:
     node_config:
       InstanceType: inf2.24xlarge
-      ImageId: ami-08e0e50fdfb9441dc
+      ImageId: ami-0dd24597b3a4ced02
       EbsOptimized: True
       BlockDeviceMappings:
         - DeviceName: /dev/sda1
@@ -43,7 +43,7 @@ available_node_types:
     max_workers: 4
     node_config:
       InstanceType: inf2.24xlarge
-      ImageId: ami-08e0e50fdfb9441dc
+      ImageId: ami-0dd24597b3a4ced02
       EbsOptimized: True
       BlockDeviceMappings:
         - DeviceName: /dev/sda1

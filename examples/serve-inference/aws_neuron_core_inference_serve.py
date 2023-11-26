@@ -14,7 +14,7 @@ local_model_path = f"{hf_model.replace('/','_')}-split"
     autoscaling_config={
         "min_replicas": 1,
         "max_replicas": 4,
-        "target_num_ongoing_requests_per_replica": 1,
+        "target_num_ongoing_requests_per_replica": 5,
         "health_check_timeout_s": 600,
     },
 )
@@ -42,7 +42,7 @@ class APIIngress:
     autoscaling_config={
         "min_replicas": 1,
         "max_replicas": 4,
-        "target_num_ongoing_requests_per_replica": 1,
+        "target_num_ongoing_requests_per_replica": 5,
         "health_check_timeout_s": 600,
     },
 )
@@ -66,7 +66,7 @@ class LlamaModel:
         input_ids = self.tokenizer.encode(sentence, return_tensors="pt")
         with torch.inference_mode():
             generated_sequences = self.neuron_model.sample(
-                input_ids, sequence_length=512, top_k=20
+                input_ids, sequence_length=128, top_k=10
             )
         return [self.tokenizer.decode(seq) for seq in generated_sequences]
 
