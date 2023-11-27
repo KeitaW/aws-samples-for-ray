@@ -11,7 +11,7 @@ git clone https://github.com/aws-samples/aws-samples-for-ray
 cd aws-samples-for-ray/examples/serve-inference
 ```
 
-* Replace subnet and security-group where you intend to launch the cluster in `1.cluster-inference-serve.yaml`
+* Replace subnet and security-group where you intend to launch the cluster in `1_cluster-inference-serve.yaml`
 
 ```
 sed -i 's/subnet-replace-me/subnet-ID/g' cluster-inference-serve.yaml
@@ -21,7 +21,7 @@ sed -i 's/sg-replace-me/sg-ID/g' cluster-inference-serve.yaml
 1. Start your Ray cluster from your local laptop (pre-requisite of Ray installation):
 
     ```bash
-    ray up 1.cluster-inference-serve.yaml
+    ray up 1_cluster-inference-serve.yaml
     ```
 
     You will be prompted to confirm the cluster creation as follows. Input `y` and proceed.
@@ -43,13 +43,14 @@ sed -i 's/sg-replace-me/sg-ID/g' cluster-inference-serve.yaml
     No head node found. Launching a new cluster. Confirm [y/N]: 
     ```
 
-    After the command, we have 1 head node and 1 worker node. 
+
+
 
 2. Log in to the head node.
     Once cluster is launched, you can login to the head node with the following command.
 
     ```bash
-    ray attach 1.cluster-inference-serve.yaml
+    ray attach 1_cluster-inference-serve.yaml
     ```
 
     You will see terminal of the head node as follows.
@@ -67,6 +68,7 @@ sed -i 's/sg-replace-me/sg-ID/g' cluster-inference-serve.yaml
 
     ```bash
     cd ~/neuron_demo
+    source /opt/aws_neuron_venv_pytorch/bin/activate
     ```
 
     The rest of the contents assume that you are working on the node and directory. 
@@ -76,7 +78,6 @@ sed -i 's/sg-replace-me/sg-ID/g' cluster-inference-serve.yaml
 Now that we have a ray cluster with Inf2 instances, let's deploy Llama2 model on the infrastructure. `2.aws_neuron_core_inference_serve.py` contains basic ray serve setup for this part.
 
 We can deploy `app` defined in the script as follows.
-
 
 
 
