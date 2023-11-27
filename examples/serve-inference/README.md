@@ -45,7 +45,7 @@ sed -i 's/sg-replace-me/sg-ID/g' cluster-inference-serve.yaml
     No head node found. Launching a new cluster. Confirm [y/N]: 
     ```
 
-After the command, we have 1 head node and 1 worker node. 
+    After the command, we have 1 head node and 1 worker node. 
 
 2. Log in to the head node.
     Once cluster is launched, you can login to the head node with the following command.
