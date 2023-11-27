@@ -26,6 +26,25 @@ sed -i 's/sg-replace-me/sg-ID/g' cluster-inference-serve.yaml
     ray up 1.cluster-inference-serve.yaml
     ```
 
+    You will be prompted to confirm the cluster creation as follows. Input `y` and proceed.
+
+    ```console
+    Cluster: inference-serve
+
+    2023-11-27 15:37:17,639 INFO util.py:375 -- setting max workers for head node type to 0
+    Loaded cached provider configuration
+    If you experience issues with the cloud provider, try re-running the command with --no-config-cache.
+    AWS config
+    IAM Profile: ray-autoscaler-v1 [default]
+    EC2 Key pair (all available node types): ray-autoscaler_us-west-2 [default]
+    VPC Subnets (all available node types): subnet-0a910e572266c13bd [default]
+    EC2 Security groups (ray.head.default): sg-0581f8300b3b2455e [default]
+    EC2 Security groups (ray.worker.default): sg-0294e801896f7b828
+    EC2 AMI (all available node types): ami-0396c2a8448f872d2
+
+    No head node found. Launching a new cluster. Confirm [y/N]: 
+    ```
+
 After the command, we have 1 head node and 1 worker node. 
 
 2. Log in to the head node.
@@ -56,7 +75,11 @@ After the command, we have 1 head node and 1 worker node.
 
 ## Step 2: Deploy Llama2 with Ray
 
-Now that we have a ray cluster with Inf2 instances, let's deploy Llama2 model on the infrastructure. 
+Now that we have a ray cluster with Inf2 instances, let's deploy Llama2 model on the infrastructure. `2.aws_neuron_core_inference_serve.py` contains basic ray serve setup for this part.
+
+We can deploy `app` defined in the script as follows.
+
+
 
 
 
