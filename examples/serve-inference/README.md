@@ -147,9 +147,11 @@ serve run gradio_ray_serve:app --runtime-env-json='{"env_vars":{"NEURON_CC_FLAGS
 ``` 
 
 ## Teardown
-To teardown the cluster/resources
+
+To teardown the cluster and associated resources, please run the `ray down` command and reference the cluster configuration file as follows:
+
 ```
-ray down cluster-inference-serve.yaml -y
+ray down -y 1_cluster-inference-serve.yaml
 ```
 
 
