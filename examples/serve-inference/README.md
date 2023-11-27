@@ -46,6 +46,21 @@ After the command, we have 1 head node and 1 worker node.
     ubuntu@ip-10-0-95-229:~$ 
     ```
 
+    Once log into the node mode the current working directory to `neuron_demo`.
+
+    ```bash
+    cd ~/neuron_demo
+    ```
+
+    The rest of the contents assume that you are working on the node and directory. 
+
+## Step 2: Deploy Llama2 with Ray
+
+Now that we have a ray cluster with Inf2 instances, let's deploy Llama2 model on the infrastructure. 
+
+
+
+
 3. Deploy the model using ray serve with `serve` command.
 
 
