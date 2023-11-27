@@ -1,4 +1,4 @@
-cluster_name: PLACEHOLDER
+cluster_name: inference-serve
 
 max_workers: 4
 
@@ -8,11 +8,11 @@ idle_timeout_minutes: 60
 # Cloud-provider specific configuration.
 provider:
   type: aws
-  region: PLACEHOLDER
+  region: us-west-2
   # Availability zone(s), comma-separated, that nodes may be launched in.
   # Nodes will be launched in the first listed availability zone and will
   # be tried in the subsequent availability zones if launching fails.
-  availability_zone: PLACEHOLDER
+  availability_zone: us-west-2d
   #use_internal_ips: True
   cache_stopped_nodes: False
 
@@ -30,19 +30,38 @@ auth:
 available_node_types:
   ray.head.default:
     node_config:
-      InstanceType: c5.xlarge
+      InstanceType: inf2.24xlarge
+      ImageId: ami-0396c2a8448f872d2
+      EbsOptimized: True
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            VolumeSize: 512
+    # resources: { "CPU": 0 } # Avoid scheduling ray processes on the head node.
   ray.worker.default:
     min_workers: 1
     max_workers: 4
     node_config:
-      InstanceType: c5.xlarge
+      InstanceType: inf2.24xlarge
+      ImageId: ami-0396c2a8448f872d2
+      EbsOptimized: True
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            VolumeSize: 512
+      NetworkInterfaces:
+        - DeviceIndex: 0
+          NetworkCardIndex: 0
+          SubnetId: subnet-0a910e572266c13bd
+          Groups:
+            - sg-0294e801896f7b828
 
 # List of shell commands to run to set up nodes.
 setup_commands:
   - |
     source /opt/aws_neuron_venv_pytorch/bin/activate
     python -m pip install wget awscli regex
-    pip install -U torchvision transformers sentencepiece
+    pip install -U neuronx-cc==2.* torch-neuronx torchvision "ray[serve]==2.7.1" transformers-neuronx sentencepiece
 
 # Custom commands that will be run on the head node after common setup.
 head_setup_commands:
@@ -59,6 +78,7 @@ worker_setup_commands: []
 # Command to start ray on the head node. You don't need to change this.
 head_start_ray_commands:
   - |
+    source /opt/aws_neuron_venv_pytorch/bin/activate
     ray stop
     ray start --head --port=6379 --object-manager-port=8076 --autoscaling-config=~/ray_bootstrap_config.yaml
     deactivate
@@ -66,6 +86,7 @@ head_start_ray_commands:
 # Command to start ray on worker nodes. You don't need to change this.
 worker_start_ray_commands:
   - |
+    source /opt/aws_neuron_venv_pytorch/bin/activate
     ray stop
     ray start --address=$RAY_HEAD_IP:6379 --object-manager-port=8076
     deactivate

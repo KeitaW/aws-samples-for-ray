@@ -7,7 +7,7 @@ from transformers_neuronx.llama.model import LlamaForSampling
 from transformers_neuronx.module import save_pretrained_split
 
 hf_model = "NousResearch/Llama-2-7b-chat-hf"
-local_model_path = f"{hf_model.replace('/','_')}-split"
+local_model_path = f"/home/ubuntu/{hf_model.replace('/','_')}-split"
 
 
 @serve.deployment(
@@ -35,7 +35,7 @@ class APIIngress:
         "runtime_env": {
             "env_vars": {
                 "NEURON_CC_FLAGS": "-O1",
-                "NEURON_COMPILE_CACHE_URL": "/home/ubuntu/neuron_demo/neuron-compile-cache",
+                "NEURON_COMPILE_CACHE_URL": "/home/ubuntu/neuron-compile-cache",
             }
         },
     },
@@ -59,7 +59,9 @@ class LlamaModel:
         self.neuron_model = LlamaForSampling.from_pretrained(
             local_model_path, batch_size=1, tp_degree=12, amp="f16"
         )
+        print(f"compiling...")
         self.neuron_model.to_neuron()
+        print(f"compiled!")
         self.tokenizer = AutoTokenizer.from_pretrained(hf_model)
 
     def infer(self, sentence: str):

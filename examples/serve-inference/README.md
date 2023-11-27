@@ -1,17 +1,20 @@
-This example compiles Open LLAMA-3B model and deploys the model on Trainium (Trn1)  instance
-using Ray Serve and FastAPI. It uses transformers-neuronx to shard the model across devices/neuron cores
-via Tensor parallelism. 
+# Deploy Chat bot on Inferentia with Ray
+
+This example compiles Open LLAMA-3B model and deploys the model on Inferentia (Inf2)  instance
+using Ray Serve and FastAPI. It uses transformers-neuronx to shard the model across devices/neuron cores via Tensor parallelism. 
 
 
-## Setup 
-* Clone this repo to run the example on your local laptop:
-```
+## Step1: Infrastructure Setup 
+
+* Clone this repo to run the example on your local environment:
+
+```bash
 git clone https://github.com/aws-samples/aws-samples-for-ray
-
 cd aws-samples-for-ray/examples/serve-inference
 ```
 
-* Replace subnet and security-group where you intend to launch the cluster in `cluster-inference-serve.yaml`
+* Replace subnet and security-group where you intend to launch the cluster in `1.cluster-inference-serve.yaml`
+
 ```
 sed -i 's/subnet-replace-me/subnet-ID/g' cluster-inference-serve.yaml
 sed -i 's/sg-replace-me/sg-ID/g' cluster-inference-serve.yaml
