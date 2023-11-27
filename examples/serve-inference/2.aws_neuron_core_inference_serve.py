@@ -10,14 +10,6 @@ hf_model = "NousResearch/Llama-2-7b-chat-hf"
 local_model_path = f"/home/ubuntu/{hf_model.replace('/','_')}-split"
 
 
-@serve.deployment(
-    autoscaling_config={
-        "min_replicas": 1,
-        "max_replicas": 4,
-        "target_num_ongoing_requests_per_replica": 5,
-        "health_check_timeout_s": 600,
-    },
-)
 class APIIngress:
     def __init__(self, llama_model_handle) -> None:
         self.handle = llama_model_handle
@@ -29,23 +21,6 @@ class APIIngress:
         return result
 
 
-@serve.deployment(
-    ray_actor_options={
-        "resources": {"neuron_cores": 12},
-        "runtime_env": {
-            "env_vars": {
-                "NEURON_CC_FLAGS": "-O1",
-                "NEURON_COMPILE_CACHE_URL": "/home/ubuntu/neuron-compile-cache",
-            }
-        },
-    },
-    autoscaling_config={
-        "min_replicas": 1,
-        "max_replicas": 4,
-        "target_num_ongoing_requests_per_replica": 5,
-        "health_check_timeout_s": 600,
-    },
-)
 class LlamaModel:
     def __init__(self):
         if not os.path.exists(local_model_path):
@@ -68,7 +43,7 @@ class LlamaModel:
         input_ids = self.tokenizer.encode(sentence, return_tensors="pt")
         with torch.inference_mode():
             generated_sequences = self.neuron_model.sample(
-                input_ids, sequence_length=128, top_k=10
+                input_ids, sequence_length=512, top_k=20
             )
         return [self.tokenizer.decode(seq) for seq in generated_sequences]
 
