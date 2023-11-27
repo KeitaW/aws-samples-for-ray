@@ -20,12 +20,35 @@ sed -i 's/subnet-replace-me/subnet-ID/g' cluster-inference-serve.yaml
 sed -i 's/sg-replace-me/sg-ID/g' cluster-inference-serve.yaml
 ```
 
-* Start your Ray cluster from your local laptop (pre-requisite of Ray installation):
-```
-ray up cluster-inference-serve.yaml
-```
+1. Start your Ray cluster from your local laptop (pre-requisite of Ray installation):
 
-* Deploy the model using serve
+    ```bash
+    ray up 1.cluster-inference-serve.yaml
+    ```
+
+After the command, we have 1 head node and 1 worker node. 
+
+2. Log in to the head node.
+    Once cluster is launched, you can login to the head node with the following command.
+
+    ```bash
+    ray attach 1.cluster-inference-serve.yaml
+    ```
+
+    You will see terminal of the head node as follows.
+
+    ```console
+    2023-11-27 15:24:55,387 INFO util.py:375 -- setting max workers for head node type to 0
+    Loaded cached provider configuration
+    If you experience issues with the cloud provider, try re-running the command with --no-config-cache.
+    Fetched IP: 44.242.165.202
+    Warning: Permanently added '44.242.165.202' (ED25519) to the list of known hosts.
+    ubuntu@ip-10-0-95-229:~$ 
+    ```
+
+3. Deploy the model using ray serve with `serve` command.
+
+
 ```
 ray exec cluster-inference-serve.yaml \
 'source aws_neuron_venv_pytorch/bin/activate && cd neuron_demo && serve run aws_neuron_core_inference_serve:entrypoint --runtime-env-json="{\"env_vars\":{\"NEURON_CC_FLAGS\": \"--model-type=transformer-inference\",\"FI_EFA_FORK_SAFE\":\"1\"}}"' \
