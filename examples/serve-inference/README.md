@@ -1,6 +1,6 @@
-# Deploying a basic Llama2 chat bot with AWS Inferentia and Ray Serve
+# Deploying a basic Llama2 chatbot with AWS Inferentia and Ray Serve
 
-This example shows how to prepare and deploy a Llama2-7B model using [AWS Inferentia](https://aws.amazon.com/machine-learning/inferentia/) accelerators and [Ray Serve](https://docs.ray.io/en/latest/serve/index.html) model hosting. The [transformers-neuronx library](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/libraries/transformers-neuronx/index.html) is used to provide tensor parallelism, which allows large language models (LLMs) like Llama2 to be sharded across multiple Inferentia NeuronCores to provide accelerated inference. The example also shows how to enable autoscaling of the Ray Serve application so that the deployments scale up and down based on user demand. The chat bot's web interface is created using the popular [Gradio](https://www.gradio.app/) package. 
+This example shows how to prepare and deploy a Llama2-7B model using [AWS Inferentia](https://aws.amazon.com/machine-learning/inferentia/) accelerators and [Ray Serve](https://docs.ray.io/en/latest/serve/index.html) model hosting. The [transformers-neuronx library](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/libraries/transformers-neuronx/index.html) is used to provide tensor parallelism, which allows large language models (LLMs) like Llama2 to be sharded across multiple Inferentia NeuronCores to provide accelerated inference. The example also shows how to enable autoscaling of the Ray Serve application so that the deployments scale up and down based on user demand. The chatbot's web interface is created using the popular [Gradio](https://www.gradio.app/) package. 
 
 ## Step1: Infrastructure Setup 
 
@@ -157,7 +157,7 @@ response = requests.get(f"http://127.0.0.1:8000/infer?sentence=AWS is super cool
 print(response.status_code, response.json())
 ```
 
-## Demo the chat bot with Gradio
+## Demo the chatbot with Gradio
 The demo file 4_aws_neuron_core_inference_serve__gradio.py integrates the Llama2-7B-chat model with a Gradio application hosted via Ray Serve. The Gradio application allows the user to submit prompts to the model, and displays the text that is generated in response to the prompts.
 
 To launch the demo, first make sure that you have SSH'd to your Ray head-node and allowed TCP port forwarding for port 8000, ex:
