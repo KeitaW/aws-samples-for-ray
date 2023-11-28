@@ -96,11 +96,15 @@ It will show output similar to the following:
 2023-11-28 00:31:31,561 SUCC scripts.py:519 -- Deployed Serve app successfully
 ```
 
-You can then submit requests to the model via HTTP requests, using tools such as curl:
+You can then submit requests to the model via HTTP requests using tools such as curl. To submit an HTTP request to your model, first open a new terminal and connect to your head node:
+```
+ray attach 1_cluster-inference-serve.yaml 
+
+Then run the following curl command to send an HTTP request to the model:
+
 ```
 curl http://127.0.0.1:8000?sentence=write%20a%20poem%20about%20singing%20cats
 ```
-
 
 Alternatively, you can submit requests through Python on head node
 
@@ -116,6 +120,8 @@ import requests
 response = requests.get(f"http://127.0.0.1:8000/infer?sentence=AWS is super cool")
 print(response.status_code, response.json())
 ```
+
+When you are finished testing your model, please press `CONTROL-C` in your first terminal to stop the Ray Serve application.
 
 
 ## Step 3: Auto-scale your deployment
