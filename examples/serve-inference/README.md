@@ -161,6 +161,33 @@ Similarly, on the head-node, you can also check the node deployment status with 
 watch ray status
 ```
 
+You will see an output similar to below, showing that we have 1 head-node and 1 worker-node.
+
+```console
+Every 2.0s: ray status         ip-10-0-80-251: Tue Nov 28 06:16:08 2023
+
+======== Autoscaler status: 2023-11-28 06:16:07.392656 ========
+Node status
+---------------------------------------------------------------
+Healthy:
+ 1 ray.worker.default
+ 1 ray.head.default
+Pending:
+ (no pending nodes)
+Recent failures:
+ (no failures)
+
+Resources
+---------------------------------------------------------------
+Usage:
+ 2.0/96.0 CPU
+ 0B/248.72GiB memory
+ 12.0/12.0 neuron_cores
+ 44B/110.59GiB object_store_memory
+
+Demands:
+ (no resource demands)
+```
 
 
 ## Step 4: Launch the chatbot using Gradio
