@@ -88,8 +88,7 @@ Now that we have a ray cluster with Inf2 instances, let's deploy Llama2 model on
     ```console
     2023-11-28 00:00:17,426 INFO scripts.py:471 -- Running import path: '2_aws_neuron_core_inference_serve:app'.
     ...
-    TODO add end of the output
-
+    2023-11-28 00:31:31,561 SUCC scripts.py:519 -- Deployed Serve app successfully
     ```
 
 
@@ -155,16 +154,30 @@ response = requests.get(f"http://127.0.0.1:8000/infer?sentence=AWS is super cool
 print(response.status_code, response.json())
 ```
 
-## Demo with gradio
-The demo file gradio_ray_serve.py integrates Llama2 with Gradio app on Ray Serve. Llama 2 inference is deployed through Gradio app on Ray Serve so it can process and respond to HTTP requests.
+## Demo the chat bot with Gradio
+The demo file 4_aws_neuron_core_inference_serve__gradio.py integrates the Llama2-7B-chat model with a Gradio application hosted via Ray Serve. The Gradio application allows the user to submit prompts to the model, and displays the text that is generated in response to the prompts.
+
+To launch the demo, first make sure that you have SSH'd to your Ray head-node and allowed TCP port forwarding for port 8000, ex:
+
+```
+ssh -i ~/.ssh/YOUR_RAY_AUTOSCALER_KEY.pem ubuntu@IP_ADDRESS_OF_HEAD_NODE -L 8000:127.0.0.1:8000
+```
+
+Next, run the following commands on the head-node:
+ 
 ```
 source aws_neuron_venv_pytorch/bin/activate
 pip install gradio
-serve run gradio_ray_serve:app --runtime-env-json='{"env_vars":{"NEURON_CC_FLAGS": "--model-type=transformer-inference", "FI_EFA_FORK_SAFE":"1"}}'
+serve run gradio_ray_serve:app \
+--runtime-env-json='{"env_vars":{"NEURON_CC_FLAGS": "--model-type=transformer-inference", "FI_EFA_FORK_SAFE":"1"}}'
 ``` 
 
+When the Ray application launches, you can then access the web interface by browsing to [http://127.0.0.1:8000](http://127.0.0.1:8000) on your local machine.
+
 ## Teardown
-To teardown the cluster/resources
+
+To teardown the cluster and associated resources, please run the `ray down` command and reference the cluster configuration file as follows:
+
 ```
-ray down cluster-inference-serve.yaml -y
+ray down -y 1_cluster-inference-serve.yaml
 ```
