@@ -191,7 +191,7 @@ Demands:
 
 
 ## Step 4: Launch the chatbot using Gradio
-The demo file 4_aws_neuron_core_inference_serve__gradio.py integrates the Llama2-7B-chat model with a Gradio application hosted via Ray Serve. The Gradio application allows the user to submit prompts to the model, and displays the text that is generated in response to the prompts.
+The demo file `4_aws_neuron_core_inference_serve__gradio.py` integrates the Llama2-7B-chat model with a Gradio application hosted via Ray Serve. The Gradio application allows the user to submit prompts to the model, and displays the text that is generated in response to the prompts.
 
 To launch the demo, run the following commands on the head-node:
  
