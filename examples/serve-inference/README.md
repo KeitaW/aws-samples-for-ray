@@ -6,7 +6,7 @@ This example shows how to prepare and deploy a Llama2-7B model using [AWS Infere
 
 Please ensure that you have a recent version of Python installed, along with the latest version of [Ray](https://docs.ray.io/en/latest/ray-overview/installation.html). In most cases you can simply run `pip3 install -U ray[default]` to install Ray.
 
-## Step1: Infrastructure Setup 
+## Step 1: Infrastructure Setup 
 
 * Clone this repo to run the example on your local environment:
 
@@ -166,7 +166,7 @@ response = requests.get(f"http://127.0.0.1:8000/infer?sentence=AWS is super cool
 print(response.status_code, response.json())
 ```
 
-## Demo the chatbot with Gradio
+## Step 4: Launch the chatbot using Gradio
 The demo file 4_aws_neuron_core_inference_serve__gradio.py integrates the Llama2-7B-chat model with a Gradio application hosted via Ray Serve. The Gradio application allows the user to submit prompts to the model, and displays the text that is generated in response to the prompts.
 
 To launch the demo, run the following commands on the head-node:
