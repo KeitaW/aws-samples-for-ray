@@ -99,6 +99,7 @@ It will show output similar to the following:
 You can then submit requests to the model via HTTP requests using tools such as curl. To submit an HTTP request to your model, first open a new terminal and connect to your head node:
 ```
 ray attach 1_cluster-inference-serve.yaml 
+```
 
 Then run the following curl command to send an HTTP request to the model:
 
