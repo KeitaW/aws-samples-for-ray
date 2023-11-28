@@ -189,6 +189,116 @@ Demands:
  (no resource demands)
 ```
 
+Now let's try to put load onto this service. You will use a cli tool called [hay](https://github.com/rakyll/hey) for the purpose.
+Run the following command on the head node while keep other three windows keep opening.
+
+```bash
+hey -c 1 -q 0.1 -n 3 http://127.0.0.1:8000/infer?sentence=AWS
+```
+
+This command will send three requests with no concurrency.  After a while, hey will print stats like below.
+
+```console
+Summary:
+  Total:        32.3237 secs
+  Slowest:      2.3361 secs
+  Fastest:      2.2983 secs
+  Average:      2.3189 secs
+  Requests/sec: 0.0928
+  
+
+Response time histogram:
+  2.298 [1]     |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+  2.302 [0]     |
+  2.306 [0]     |
+  2.310 [0]     |
+  2.313 [0]     |
+  2.317 [0]     |
+  2.321 [0]     |
+  2.325 [1]     |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+  2.329 [0]     |
+  2.332 [0]     |
+  2.336 [1]     |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+
+Latency distribution:
+  10% in 2.3222 secs
+  25% in 2.3361 secs
+  0% in 0.0000 secs
+  0% in 0.0000 secs
+  0% in 0.0000 secs
+  0% in 0.0000 secs
+  0% in 0.0000 secs
+
+Details (average, fastest, slowest):
+  DNS+dialup:   0.0002 secs, 2.2983 secs, 2.3361 secs
+  DNS-lookup:   0.0000 secs, 0.0000 secs, 0.0000 secs
+  req write:    0.0001 secs, 0.0000 secs, 0.0002 secs
+  resp wait:    2.3184 secs, 2.2979 secs, 2.3355 secs
+  resp read:    0.0001 secs, 0.0001 secs, 0.0001 secs
+
+Status code distribution:
+  [200] 3 responses
+```
+
+Notice that number of replica for our deployment has not changed in this case. Let's try to put more pressure on it.
+
+```bash
+hey -c 10 -q 1 -n 1000 http://127.0.0.1:8000/infer?sentence=AWS
+```
+
+Notice that after a while `serve` starts creating more replicas.
+
+```console
+proxies:
+  4fd8f56025ddf134866ff112508c01438deac85df8a3cf9b8dab265d: HEALTHY
+applications:
+  default:
+    status: RUNNING
+    message: ''
+    last_deployed_time_s: 1701151334.9220335
+    deployments:
+      LlamaModel:
+        status: HEALTHY
+        replica_states:
+          STARTING: 3
+          RUNNING: 1
+        message: ''
+      APIIngress:
+        status: HEALTHY
+        replica_states:
+          RUNNING: 4
+        message: ''
+```
+
+In parallel you can see that additional worker nodes are coming up.cj
+
+```bash
+Healthy:
+ 1 ray.worker.default
+ 1 ray.head.default
+Pending:
+ 10.0.85.241: ray.worker.default, waiting-for-ssh
+ 10.0.74.58: ray.worker.default, waiting-for-ssh
+Recent failures:
+ (no failures)
+```
+
+Those `Pending` instances are eventually transition to `Healthy` state.
+
+```console
+======== Autoscaler status: 2023-11-28 07:07:19.867270 ========
+Node status
+---------------------------------------------------------------
+Healthy:
+ 3 ray.worker.default
+ 1 ray.head.default
+Pending:
+ (no pending nodes)
+Recent failures:
+ (no failures)
+```
+
 
 ## Step 4: Launch the chatbot using Gradio
 The demo file 4_aws_neuron_core_inference_serve__gradio.py integrates the Llama2-7B-chat model with a Gradio application hosted via Ray Serve. The Gradio application allows the user to submit prompts to the model, and displays the text that is generated in response to the prompts.
