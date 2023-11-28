@@ -94,7 +94,6 @@ It will show output similar to the following:
 You can then submit requests to the model via HTTP requests, using tools such as curl:
 ```
 curl http://127.0.0.1:8000?sentence=write%20a%20poem%20about%20singing%20cats
-
 ```
 
 
