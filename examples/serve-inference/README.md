@@ -73,9 +73,9 @@ sed -i 's/sg-replace-me/sg-ID/g' cluster-inference-serve.yaml
 
     The rest of the contents assume that you are working on the node and directory. Also make sure that the virtual environment is used.
 
-## Step 2: Deploy Llama2 with Ray
+## Step 2: Deploy Llama2 with Ray Serve
 
-Now that we have a Ray cluster with a head node and Inf2 instances, let's deploy the Llama2 model on the infrastructure. The example script `2_aws_neuron_core_inference_serve.py` creates a basic Ray deployment to host the Llama2 model and respond to user queries using plain HTTP requests. In a later section we will build on this example to provide a web interface.
+Now that we have a Ray cluster with a head node and Inf2 instances, let's deploy the Llama2 model on the infrastructure. The example script `2_aws_neuron_core_inference_serve.py` creates a basic Ray Serve deployment to host the Llama2 model and respond to user queries using plain HTTP requests. In a later section we will build on this example to provide a web interface.
 
     We can deploy `app` defined in the script as follows.
 
