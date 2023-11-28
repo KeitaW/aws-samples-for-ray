@@ -50,7 +50,7 @@ sed -i 's/sg-replace-me/sg-ID/g' cluster-inference-serve.yaml
     Once cluster is launched, you can login to the head node with the following command.
 
     ```bash
-    ray attach 1_cluster-inference-serve.yaml
+    ray attach -p 8000 1_cluster-inference-serve.yaml
     ```
 
     You will see terminal of the head node as follows.
@@ -75,7 +75,7 @@ sed -i 's/sg-replace-me/sg-ID/g' cluster-inference-serve.yaml
 
 ## Step 2: Deploy Llama2 with Ray
 
-Now that we have a ray cluster with Inf2 instances, let's deploy Llama2 model on the infrastructure. `2.aws_neuron_core_inference_serve.py` contains basic ray serve setup for this part.
+Now that we have a Ray cluster with a head node and Inf2 instances, let's deploy the Llama2 model on the infrastructure. The example script `2_aws_neuron_core_inference_serve.py` creates a basic Ray deployment to host the Llama2 model and respond to user queries using plain HTTP requests. In a later section we will build on this example to provide a web interface.
 
     We can deploy `app` defined in the script as follows.
 
@@ -83,12 +83,18 @@ Now that we have a ray cluster with Inf2 instances, let's deploy Llama2 model on
     serve run 2_aws_neuron_core_inference_serve:app
     ```
 
-    It will shows output like follows.
+    It will show output similar to the following:
 
     ```console
     2023-11-28 00:00:17,426 INFO scripts.py:471 -- Running import path: '2_aws_neuron_core_inference_serve:app'.
     ...
     2023-11-28 00:31:31,561 SUCC scripts.py:519 -- Deployed Serve app successfully
+    ```
+
+    You can then submit requests to the model via HTTP requests, using tools such as curl:
+    ```
+    curl http://127.0.0.1:8000?sentence=write%20a%20poem%20about%20singing%20cats
+
     ```
 
 
@@ -141,7 +147,7 @@ applications:
 ## Usage
 Attach to the head node of the Ray cluster
 ```
-ray attach cluster-inference-serve.yaml
+ray attach -p 8000 cluster-inference-serve.yaml
 ```
 
 Navigate to the python interpreter on head node
@@ -160,13 +166,7 @@ print(response.status_code, response.json())
 ## Demo the chatbot with Gradio
 The demo file 4_aws_neuron_core_inference_serve__gradio.py integrates the Llama2-7B-chat model with a Gradio application hosted via Ray Serve. The Gradio application allows the user to submit prompts to the model, and displays the text that is generated in response to the prompts.
 
-To launch the demo, first make sure that you have SSH'd to your Ray head-node and allowed TCP port forwarding for port 8000, ex:
-
-```
-ssh -i ~/.ssh/YOUR_RAY_AUTOSCALER_KEY.pem ubuntu@IP_ADDRESS_OF_HEAD_NODE -L 8000:127.0.0.1:8000
-```
-
-Next, run the following commands on the head-node:
+To launch the demo, run the following commands on the head-node:
  
 ```
 source aws_neuron_venv_pytorch/bin/activate
@@ -175,7 +175,7 @@ serve run gradio_ray_serve:app \
 --runtime-env-json='{"env_vars":{"NEURON_CC_FLAGS": "--model-type=transformer-inference", "FI_EFA_FORK_SAFE":"1"}}'
 ``` 
 
-When the Ray application launches, you can then access the web interface by browsing to [http://127.0.0.1:8000](http://127.0.0.1:8000) on your local machine.
+When the Ray Serve application launches, you can then access the Gradio web interface by browsing to [http://127.0.0.1:8000](http://127.0.0.1:8000) on your local machine. If you are unable to access this URL on your local machine, please make sure that you have used the `-p 8000` option when attaching to your head-node, ex: `ray attach -p 8000 1_cluster-inference-serve.yaml`.
 
 ## Teardown
 
