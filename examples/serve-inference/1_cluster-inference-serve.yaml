@@ -61,7 +61,7 @@ setup_commands:
   - |
     source /opt/aws_neuron_venv_pytorch/bin/activate
     python -m pip install wget awscli regex
-    pip install -U neuronx-cc==2.* torch-neuronx torchvision "ray[serve]==2.7.1" transformers-neuronx sentencepiece
+    pip install -U neuronx-cc==2.* torch-neuronx torchvision "ray[serve]==2.7.1" transformers-neuronx sentencepiece gradio
 
 # Custom commands that will be run on the head node after common setup.
 head_setup_commands:
