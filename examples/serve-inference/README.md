@@ -110,12 +110,15 @@ In the previous step, you have deployed Llama2 model with basic configuration. Y
 serve run 2_aws_neuron_core_inference_serve:app
 ```
 
-* Wait for the serve deployment to complete (typically takes ~5minutes)
+Wait for the serve deployment to complete. You can check the progress with `serve` command. 
+
+```bash
+ray exec 1_cluster-inference-serve.yaml 'source aws_neuron_venv_pytorch/bin/activate && watch serve status'
 ```
-ray exec 1_cluster-inference-serve.yaml 'source aws_neuron_venv_pytorch/bin/activate && serve status'
-```
-Sample expected output of serve status
-```
+
+Sample expected output of serve status after the deployment completion is shown below.
+
+```console
 proxies:
   proxy-uuid: HEALTHY
 applications:
