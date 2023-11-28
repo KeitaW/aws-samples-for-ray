@@ -105,10 +105,9 @@ curl http://127.0.0.1:8000?sentence=write%20a%20poem%20about%20singing%20cats
 
 In the previous step, you have deployed Llama2 model with basic configuration. You only have one inference server, which might be insufficient depends on your service requirement. In this step, you will deploy `3_aws_neuron_core_inference_serve.py` which comes with inference service auto scaling based on the incoming requests.
 
-    ```bash
-    serve run 2_aws_neuron_core_inference_serve:app
-    ```
-
+```bash
+serve run 2_aws_neuron_core_inference_serve:app
+```
 
 
 3. Deploy the model using ray serve with `serve` command.
