@@ -12,10 +12,7 @@ local_model_path = f"/home/ubuntu/{hf_model.replace('/','_')}-split"
 
 @serve.deployment(
     autoscaling_config={
-        "min_replicas": 1,
-        "max_replicas": 4,
-        "target_num_ongoing_requests_per_replica": 5,
-        "health_check_timeout_s": 600,
+        TODO
     },
 )
 class APIIngress:
@@ -40,10 +37,7 @@ class APIIngress:
         },
     },
     autoscaling_config={
-        "min_replicas": 1,
-        "max_replicas": 4,
-        "target_num_ongoing_requests_per_replica": 5,
-        "health_check_timeout_s": 600,
+        TODO
     },
 )
 class LlamaModel:
