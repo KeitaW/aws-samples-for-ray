@@ -109,19 +109,9 @@ In the previous step, you have deployed Llama2 model with basic configuration. Y
 serve run 2_aws_neuron_core_inference_serve:app
 ```
 
-
-3. Deploy the model using ray serve with `serve` command.
-
-
-```
-ray exec cluster-inference-serve.yaml \
-'source aws_neuron_venv_pytorch/bin/activate && cd neuron_demo && serve run aws_neuron_core_inference_serve:entrypoint --runtime-env-json="{\"env_vars\":{\"NEURON_CC_FLAGS\": \"--model-type=transformer-inference\",\"FI_EFA_FORK_SAFE\":\"1\"}}"' \
---tmux
-```
-
 * Wait for the serve deployment to complete (typically takes ~5minutes)
 ```
-ray exec cluster-inference-serve.yaml 'source aws_neuron_venv_pytorch/bin/activate && serve status'
+ray exec 1_cluster-inference-serve.yaml 'source aws_neuron_venv_pytorch/bin/activate && serve status'
 ```
 Sample expected output of serve status
 ```
@@ -149,7 +139,7 @@ applications:
 ## Usage
 Attach to the head node of the Ray cluster
 ```
-ray attach -p 8000 cluster-inference-serve.yaml
+ray attach -p 8000 1_cluster-inference-serve.yaml
 ```
 
 Navigate to the python interpreter on head node
