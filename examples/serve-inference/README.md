@@ -102,6 +102,22 @@ curl http://127.0.0.1:8000?sentence=write%20a%20poem%20about%20singing%20cats
 ```
 
 
+Alternatively, you can submit requests through Python on head node
+
+```
+python
+```
+
+Start using the model
+
+```
+import requests
+
+response = requests.get(f"http://127.0.0.1:8000/infer?sentence=AWS is super cool")
+print(response.status_code, response.json())
+```
+
+
 ## Step 3: Auto-scale your deployment
 
 In the previous step, you have deployed Llama2 model with basic configuration. You only have one inference server, which might be insufficient depends on your service requirement. In this step, you will deploy `3_aws_neuron_core_inference_serve.py` which comes with inference service auto scaling based on the incoming requests.
@@ -110,10 +126,10 @@ In the previous step, you have deployed Llama2 model with basic configuration. Y
 serve run 2_aws_neuron_core_inference_serve:app
 ```
 
-Wait for the serve deployment to complete. You can check the progress with `serve` command. 
+Wait for the serve deployment to complete. You can check the progress with `serve` command on the head-node. 
 
 ```bash
-ray exec 1_cluster-inference-serve.yaml 'source aws_neuron_venv_pytorch/bin/activate && watch serve status'
+watch serve status
 ```
 
 Sample expected output of serve status after the deployment completion is shown below.
@@ -139,25 +155,13 @@ applications:
         message: ''
 ```
 
+Similarly, on the head-node, you can also check the node deployment status with the following command. 
 
-## Usage
-Attach to the head node of the Ray cluster
-```
-ray attach -p 8000 1_cluster-inference-serve.yaml
-```
-
-Navigate to the python interpreter on head node
-```
-source aws_neuron_venv_pytorch/bin/activate && python
+```bash
+watch ray status
 ```
 
-Start using the model
-```
-import requests
 
-response = requests.get(f"http://127.0.0.1:8000/infer?sentence=AWS is super cool")
-print(response.status_code, response.json())
-```
 
 ## Step 4: Launch the chatbot using Gradio
 The demo file 4_aws_neuron_core_inference_serve__gradio.py integrates the Llama2-7B-chat model with a Gradio application hosted via Ray Serve. The Gradio application allows the user to submit prompts to the model, and displays the text that is generated in response to the prompts.
