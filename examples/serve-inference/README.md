@@ -171,8 +171,7 @@ To launch the demo, run the following commands on the head-node:
 ```
 source aws_neuron_venv_pytorch/bin/activate
 pip install gradio
-serve run gradio_ray_serve:app \
---runtime-env-json='{"env_vars":{"NEURON_CC_FLAGS": "--model-type=transformer-inference", "FI_EFA_FORK_SAFE":"1"}}'
+serve run 4_aws_neuron_core_inference_serve__gradio:app 
 ``` 
 
 When the Ray Serve application launches, you can then access the Gradio web interface by browsing to [http://127.0.0.1:8000](http://127.0.0.1:8000) on your local machine. If you are unable to access this URL on your local machine, please make sure that you have used the `-p 8000` option when attaching to your head-node, ex: `ray attach -p 8000 1_cluster-inference-serve.yaml`.
