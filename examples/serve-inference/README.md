@@ -2,6 +2,10 @@
 
 This example shows how to prepare and deploy a Llama2-7B model using [AWS Inferentia](https://aws.amazon.com/machine-learning/inferentia/) accelerators and [Ray Serve](https://docs.ray.io/en/latest/serve/index.html) model hosting. The [transformers-neuronx library](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/libraries/transformers-neuronx/index.html) is used to provide tensor parallelism, which allows large language models (LLMs) like Llama2 to be sharded across multiple Inferentia NeuronCores to provide accelerated inference. The example also shows how to enable autoscaling of the Ray Serve application so that the deployments scale up and down based on user demand. The chatbot's web interface is created using the popular [Gradio](https://www.gradio.app/) package. 
 
+## Prerequisites
+
+Please ensure that you have a recent version of Python installed, along with the latest version of [Ray](https://docs.ray.io/en/latest/ray-overview/installation.html). In most cases you can simply run `pip3 install -U ray[default]` to install Ray.
+
 ## Step1: Infrastructure Setup 
 
 * Clone this repo to run the example on your local environment:
