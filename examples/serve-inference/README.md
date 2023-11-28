@@ -94,8 +94,11 @@ Now that we have a ray cluster with Inf2 instances, let's deploy Llama2 model on
 
 ## Step 3: Auto-scale your deployment
 
-In the previous step, you have deployed Llama2 model with basic configuration. You only have one inference server, which might be insufficient depends on your service requirement. In this step, you will see how 
+In the previous step, you have deployed Llama2 model with basic configuration. You only have one inference server, which might be insufficient depends on your service requirement. In this step, you will deploy `3_aws_neuron_core_inference_serve.py` which comes with inference service auto scaling based on the incoming requests.
 
+    ```bash
+    serve run 2_aws_neuron_core_inference_serve:app
+    ```
 
 
 
