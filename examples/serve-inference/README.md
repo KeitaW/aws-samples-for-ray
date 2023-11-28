@@ -18,7 +18,9 @@ cd aws-samples-for-ray/examples/serve-inference
 * Modify `1_cluster-inference-serve.yaml` and replace ${AMI_ID}, ${SUBNET_ID}, and ${SECURITYGROUP_ID} with the desired AMI ID, subnet ID, and security group ID that will be used to deploy your Ray cluster. If you are unsure of the AMI ID, you can run the following command to determine the latest Ubuntu-based Neuron deep learning AMI (DLAMI): 
 
 ```
-aws ec2 describe-images --region us-east-1 --owners amazon --filters 'Name=name,Values=Deep Learning AMI Neuron PyTorch 1.13 (Ubuntu 20.04) ????????' 'Name=state,Values=available' --query 'reverse(sort_by(Images, &CreationDate))[:1].ImageId' --output text
+aws ec2 describe-images --region us-west-2 --owners amazon \
+--filters 'Name=name,Values=Deep Learning AMI Neuron PyTorch 1.13 (Ubuntu 20.04) ????????' 'Name=state,Values=available' \
+--query 'reverse(sort_by(Images, &CreationDate))[:1].ImageId' --output text
 ```
 
 1. Start your Ray cluster from your local laptop (pre-requisite of Ray installation):
