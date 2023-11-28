@@ -4,7 +4,7 @@ This example shows how to prepare and deploy a Llama2-7B model using [AWS Infere
 
 ## Prerequisites
 
-Please ensure that you have a recent version of Python installed, along with the latest version of [Ray](https://docs.ray.io/en/latest/ray-overview/installation.html). In most cases you can simply run `pip3 install -U ray[default]` to install Ray.
+Please ensure that you have a recent version of Python installed, along with the latest version of [Ray](https://docs.ray.io/en/latest/ray-overview/installation.html) and the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html). In most cases you can simply run `pip3 install -U ray[default]` to install Ray.
 
 ## Step 1: Infrastructure Setup 
 
