@@ -71,13 +71,28 @@ sed -i 's/sg-replace-me/sg-ID/g' cluster-inference-serve.yaml
     source /opt/aws_neuron_venv_pytorch/bin/activate
     ```
 
-    The rest of the contents assume that you are working on the node and directory. 
+    The rest of the contents assume that you are working on the node and directory. Also make sure that the virtual environment is used.
 
 ## Step 2: Deploy Llama2 with Ray
 
 Now that we have a ray cluster with Inf2 instances, let's deploy Llama2 model on the infrastructure. `2.aws_neuron_core_inference_serve.py` contains basic ray serve setup for this part.
 
-We can deploy `app` defined in the script as follows.
+    We can deploy `app` defined in the script as follows.
+
+    ```bash
+    serve run 2_aws_neuron_core_inference_serve:app
+    ```
+
+    It will shows output like follows.
+
+    ```console
+    2023-11-28 00:00:17,426 INFO scripts.py:471 -- Running import path: '2_aws_neuron_core_inference_serve:app'.
+    ...
+
+    ```
+
+
+
 
 
 

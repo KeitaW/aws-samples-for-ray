@@ -10,6 +10,7 @@ hf_model = "NousResearch/Llama-2-7b-chat-hf"
 local_model_path = f"/home/ubuntu/{hf_model.replace('/','_')}-split"
 
 
+@serve.deployment
 class APIIngress:
     def __init__(self, llama_model_handle) -> None:
         self.handle = llama_model_handle
@@ -21,6 +22,17 @@ class APIIngress:
         return result
 
 
+@serve.deployment(
+    ray_actor_options={
+        "resources": {"neuron_cores": 12},
+        "runtime_env": {
+            "env_vars": {
+                "NEURON_CC_FLAGS": "-O1",
+                "NEURON_COMPILE_CACHE_URL": "/home/ubuntu/neuron-compile-cache",
+            }
+        },
+    },
+)
 class LlamaModel:
     def __init__(self):
         if not os.path.exists(local_model_path):
