@@ -127,10 +127,10 @@ When you are finished testing your model, please press `CONTROL-C` in your first
 
 ## Step 3: Auto-scale your deployment
 
-In the previous step, you have deployed Llama2 model with basic configuration. You only have one inference server, which might be insufficient depends on your service requirement. In this step, you will deploy `3_aws_neuron_core_inference_serve.py` which comes with inference service auto scaling based on the incoming requests.
+In the previous step, you have deployed Llama2 model with basic configuration. You only have one inference server, which might be insufficient depends on your service requirement. In this step, you will deploy `3_aws_neuron_core_inference_serve_autoscaling.py` which comes with inference service auto scaling based on the incoming requests.
 
 ```bash
-serve run 2_aws_neuron_core_inference_serve:app
+serve run 3_aws_neuron_core_inference_serve_autoscaling:app
 ```
 
 Wait for the serve deployment to complete. You can check the progress with `serve` command on the head-node. 
