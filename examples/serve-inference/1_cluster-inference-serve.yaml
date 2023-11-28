@@ -31,7 +31,7 @@ available_node_types:
   ray.head.default:
     node_config:
       InstanceType: inf2.24xlarge
-      ImageId: ami-0396c2a8448f872d2
+      ImageId: ${AMI_ID}
       EbsOptimized: True
       BlockDeviceMappings:
         - DeviceName: /dev/sda1
@@ -43,7 +43,7 @@ available_node_types:
     max_workers: 4
     node_config:
       InstanceType: inf2.24xlarge
-      ImageId: ami-0396c2a8448f872d2
+      ImageId: ${AMI_ID}
       EbsOptimized: True
       BlockDeviceMappings:
         - DeviceName: /dev/sda1
@@ -52,9 +52,9 @@ available_node_types:
       NetworkInterfaces:
         - DeviceIndex: 0
           NetworkCardIndex: 0
-          SubnetId: subnet-0a910e572266c13bd
+          SubnetId: ${SUBNET_ID}
           Groups:
-            - sg-0294e801896f7b828
+            - ${SECURITYGROUP_ID}
 
 # List of shell commands to run to set up nodes.
 setup_commands:
