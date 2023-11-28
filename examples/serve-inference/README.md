@@ -169,8 +169,8 @@ The demo file 4_aws_neuron_core_inference_serve__gradio.py integrates the Llama2
 To launch the demo, run the following commands on the head-node:
  
 ```
-source aws_neuron_venv_pytorch/bin/activate
-pip install gradio
+cd ~/neuron_demo
+source /opt/aws_neuron_venv_pytorch/bin/activate
 serve run 4_aws_neuron_core_inference_serve__gradio:app 
 ``` 
 
