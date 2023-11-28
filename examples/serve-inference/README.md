@@ -77,25 +77,25 @@ sed -i 's/sg-replace-me/sg-ID/g' cluster-inference-serve.yaml
 
 Now that we have a Ray cluster with a head node and Inf2 instances, let's deploy the Llama2 model on the infrastructure. The example script `2_aws_neuron_core_inference_serve.py` creates a basic Ray Serve deployment to host the Llama2 model and respond to user queries using plain HTTP requests. In a later section we will build on this example to provide a web interface.
 
-    We can deploy `app` defined in the script as follows.
+We can deploy `app` defined in the script as follows.
 
-    ```bash
-    serve run 2_aws_neuron_core_inference_serve:app
-    ```
+```bash
+serve run 2_aws_neuron_core_inference_serve:app
+```
 
-    It will show output similar to the following:
+It will show output similar to the following:
 
-    ```console
-    2023-11-28 00:00:17,426 INFO scripts.py:471 -- Running import path: '2_aws_neuron_core_inference_serve:app'.
-    ...
-    2023-11-28 00:31:31,561 SUCC scripts.py:519 -- Deployed Serve app successfully
-    ```
+```console
+2023-11-28 00:00:17,426 INFO scripts.py:471 -- Running import path: '2_aws_neuron_core_inference_serve:app'.
+...
+2023-11-28 00:31:31,561 SUCC scripts.py:519 -- Deployed Serve app successfully
+```
 
-    You can then submit requests to the model via HTTP requests, using tools such as curl:
-    ```
-    curl http://127.0.0.1:8000?sentence=write%20a%20poem%20about%20singing%20cats
+You can then submit requests to the model via HTTP requests, using tools such as curl:
+```
+curl http://127.0.0.1:8000?sentence=write%20a%20poem%20about%20singing%20cats
 
-    ```
+```
 
 
 ## Step 3: Auto-scale your deployment
