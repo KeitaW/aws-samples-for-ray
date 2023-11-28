@@ -23,58 +23,58 @@ aws ec2 describe-images --region us-east-1 --owners amazon --filters 'Name=name,
 
 1. Start your Ray cluster from your local laptop (pre-requisite of Ray installation):
 
-    ```bash
-    ray up 1_cluster-inference-serve.yaml
-    ```
+```bash
+ray up 1_cluster-inference-serve.yaml
+```
 
-    You will be prompted to confirm the cluster creation as follows. Input `y` and proceed.
+You will be prompted to confirm the cluster creation as follows. Input `y` and proceed.
 
-    ```console
-    Cluster: inference-serve
+```console
+Cluster: inference-serve
 
-    2023-11-27 15:37:17,639 INFO util.py:375 -- setting max workers for head node type to 0
-    Loaded cached provider configuration
-    If you experience issues with the cloud provider, try re-running the command with --no-config-cache.
-    AWS config
-    IAM Profile: ray-autoscaler-v1 [default]
-    EC2 Key pair (all available node types): ray-autoscaler_us-west-2 [default]
-    VPC Subnets (all available node types): subnet-0a910e572266c13bd [default]
-    EC2 Security groups (ray.head.default): sg-0581f8300b3b2455e [default]
-    EC2 Security groups (ray.worker.default): sg-0294e801896f7b828
-    EC2 AMI (all available node types): ami-0396c2a8448f872d2
+2023-11-27 15:37:17,639 INFO util.py:375 -- setting max workers for head node type to 0
+Loaded cached provider configuration
+If you experience issues with the cloud provider, try re-running the command with --no-config-cache.
+AWS config
+IAM Profile: ray-autoscaler-v1 [default]
+EC2 Key pair (all available node types): ray-autoscaler_us-west-2 [default]
+VPC Subnets (all available node types): subnet-0a910e572266c13bd [default]
+EC2 Security groups (ray.head.default): sg-0581f8300b3b2455e [default]
+EC2 Security groups (ray.worker.default): sg-0294e801896f7b828
+EC2 AMI (all available node types): ami-0396c2a8448f872d2
 
-    No head node found. Launching a new cluster. Confirm [y/N]: 
-    ```
+No head node found. Launching a new cluster. Confirm [y/N]: 
+```
 
 
 
 
 2. Log in to the head node.
-    Once cluster is launched, you can login to the head node with the following command.
+Once cluster is launched, you can login to the head node with the following command.
 
-    ```bash
-    ray attach -p 8000 1_cluster-inference-serve.yaml
-    ```
+```bash
+ray attach -p 8000 1_cluster-inference-serve.yaml
+```
 
-    You will see terminal of the head node as follows.
+You will see terminal of the head node as follows.
 
-    ```console
-    2023-11-27 15:24:55,387 INFO util.py:375 -- setting max workers for head node type to 0
-    Loaded cached provider configuration
-    If you experience issues with the cloud provider, try re-running the command with --no-config-cache.
-    Fetched IP: 44.242.165.202
-    Warning: Permanently added '44.242.165.202' (ED25519) to the list of known hosts.
-    ubuntu@ip-10-0-95-229:~$ 
-    ```
+```console
+2023-11-27 15:24:55,387 INFO util.py:375 -- setting max workers for head node type to 0
+Loaded cached provider configuration
+If you experience issues with the cloud provider, try re-running the command with --no-config-cache.
+Fetched IP: 44.242.165.202
+Warning: Permanently added '44.242.165.202' (ED25519) to the list of known hosts.
+ubuntu@ip-10-0-95-229:~$ 
+```
 
-    Once log into the node mode the current working directory to `neuron_demo`.
+Once log into the node mode the current working directory to `neuron_demo`.
 
-    ```bash
-    cd ~/neuron_demo
-    source /opt/aws_neuron_venv_pytorch/bin/activate
-    ```
+```bash
+cd ~/neuron_demo
+source /opt/aws_neuron_venv_pytorch/bin/activate
+```
 
-    The rest of the contents assume that you are working on the node and directory. Also make sure that the virtual environment is used.
+The rest of the contents assume that you are working on the node and the directory. Also make sure that the virtual environment is used.
 
 ## Step 2: Deploy Llama2 with Ray Serve
 
