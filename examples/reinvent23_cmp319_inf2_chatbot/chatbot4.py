@@ -25,6 +25,9 @@ class LlamaModel:
         hf_model = "NousResearch/Llama-2-7b-chat-hf"
         local_model_path = f"{hf_model.replace('/','_')}-split"
 
+        self.tokenizer = AutoTokenizer.from_pretrained(hf_model)
+
+        # Split model state_dict for fast loading onto Inferentia
         if not os.path.exists(local_model_path):
             print(f"Saving model split for {hf_model} to local path {local_model_path}")
             self.model = LlamaForCausalLM.from_pretrained(hf_model)
@@ -32,12 +35,14 @@ class LlamaModel:
         else:
             print(f"Using existing model split {local_model_path}")
 
+        # Set up model configuration for Inferentia
         print(f"Loading and compiling model {local_model_path} for Neuron")
         self.neuron_model = LlamaForSampling.from_pretrained(
             local_model_path, batch_size=1, tp_degree=12, amp="f16"
         )
+
+        # Compile and load model onto accelerators
         self.neuron_model.to_neuron()
-        self.tokenizer = AutoTokenizer.from_pretrained(hf_model)
 
     def infer(self, sentence: str):
         input_ids = self.tokenizer.encode(sentence, return_tensors="pt")
@@ -72,5 +77,4 @@ class MyGradioServer(GradioIngress):
         return await self.downstream.infer.remote(txt)
 
 
-llamamodel = LlamaModel.bind()
-app = MyGradioServer.bind(llamamodel)
+app = MyGradioServer.bind(LlamaModel.bind())

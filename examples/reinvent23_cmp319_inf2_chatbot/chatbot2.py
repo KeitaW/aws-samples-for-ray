@@ -10,7 +10,9 @@ class APIIngress:
 
     async def __call__(self, req: Request):
         sentence = req.query_params.get("sentence")  #
-        # TODO: call infer(), return result
+        # TODO:
+        # Invoke infer() within LlamaModel deployment
+        # Return result
         return sentence
 
 

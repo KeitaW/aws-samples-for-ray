@@ -6,4 +6,4 @@ class APIIngress:
         return "Hello re:Invent!\n"
 
 
-app = APIIngress.bind(None)
+# TODO: Create app via .bind()
